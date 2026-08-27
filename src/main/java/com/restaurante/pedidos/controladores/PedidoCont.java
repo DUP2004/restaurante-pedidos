@@ -1,9 +1,10 @@
-package com.restaurante.pedidos.controller;
+package com.restaurante.pedidos.controladores;
 
 import com.restaurante.pedidos.dto.PedidoRequest;
-import com.restaurante.pedidos.entity.EstadoPedido;
-import com.restaurante.pedidos.entity.Pedido;
-import com.restaurante.pedidos.service.PedidoService;
+import com.restaurante.pedidos.entidades.EstadoPedido;
+import com.restaurante.pedidos.entidades.Pedido;
+import com.restaurante.pedidos.servicio.PedidoSer;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/pedidos")
 @CrossOrigin
-public class PedidoController {
-    private final PedidoService service;
-    public PedidoController(PedidoService service) { this.service = service; }
+public class PedidoCont {
+    private final PedidoSer service;
+    public PedidoCont(PedidoSer service) { this.service = service; }
 
     @GetMapping public List<Pedido> listar() { return service.listar(); }
     @GetMapping("/{id}") public Pedido obtener(@PathVariable Long id) { return service.obtener(id); }

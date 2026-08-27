@@ -1,14 +1,15 @@
-package com.restaurante.pedidos.service;
+package com.restaurante.pedidos.servicio;
 
-import com.restaurante.pedidos.entity.Categoria;
-import com.restaurante.pedidos.repository.CategoriaRepository;
+import com.restaurante.pedidos.entidades.Categoria;
+import com.restaurante.pedidos.repositorio.CategoriaRepository;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CategoriaService {
+public class CategoriaSer {
     private final CategoriaRepository repository;
-    public CategoriaService(CategoriaRepository repository) { this.repository = repository; }
+    public CategoriaSer(CategoriaRepository repository) { this.repository = repository; }
 
     public List<Categoria> listar() { return repository.findAll(); }
     public Categoria obtener(Long id) { return repository.findById(id).orElseThrow(() -> new RuntimeException("Categoría no encontrada")); }

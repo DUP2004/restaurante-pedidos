@@ -1,0 +1,82 @@
+<section id="categorias" class="seccion">
+
+    <h2>Gestión de Categorías</h2>
+
+
+    <div class="acciones-superiores">
+
+        <button class="btn" onclick="mostrarFormularioCategoria()">
+            + Nueva categoría
+        </button>
+
+        <button class="btn" onclick="cargarCategorias()">
+            Actualizar categorías
+        </button>
+
+    </div>
+
+
+    <!-- FORMULARIO -->
+
+    <div id="formularioCategoria" class="formulario oculto">
+
+        <h3 id="tituloFormularioCategoria">
+            Nueva categoría
+        </h3>
+
+
+        <input
+            type="hidden"
+            id="categoriaId"
+        >
+
+
+        <div class="campo">
+
+            <label>Nombre</label>
+
+            <input
+                type="text"
+                id="categoriaNombre"
+                placeholder="Ejemplo: Bebidas"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label>Descripción</label>
+
+            <textarea
+                id="categoriaDescripcion"
+                placeholder="Descripción de la categoría"
+            ></textarea>
+
+        </div>
+
+
+        <button class="btn" onclick="guardarCategoria()">
+            Guardar
+        </button>
+
+
+        <button
+            class="btn btn-cancelar"
+            onclick="cancelarFormularioCategoria()"
+        >
+            Cancelar
+        </button>
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div id="listaCategorias" class="contenedor">
+
+        Cargando categorías...
+
+    </div>
+
+</section>

@@ -1,31 +1,38 @@
-package com.restaurante.pedidos.service;
+package com.restaurante.pedidos.servicio;
 
+import org.springframework.transaction.annotation.Transactional;
 import com.restaurante.pedidos.dto.DetallePedidoRequest;
 import com.restaurante.pedidos.dto.PedidoRequest;
-import com.restaurante.pedidos.entity.*;
-import com.restaurante.pedidos.repository.*;
+import com.restaurante.pedidos.entidades.*;
+import com.restaurante.pedidos.repositorio.*;
+
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
-public class PedidoService {
+public class PedidoSer {
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final ProductoRepository productoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository,
+    public PedidoSer(PedidoRepository pedidoRepository, ClienteRepository clienteRepository,
                          ProductoRepository productoRepository) {
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.productoRepository = productoRepository;
     }
 
-    public List<Pedido> listar() { return pedidoRepository.findAll(); }
+@Transactional(readOnly = true)
+public List<Pedido> listar() {
+    return pedidoRepository.findAll();
+}
 
-    public Pedido obtener(Long id) {
-        return pedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-    }
+@Transactional(readOnly = true)
+public Pedido obtener(Long id) {
+    return pedidoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+}
 
     public Pedido crear(PedidoRequest request) {
         Cliente cliente = clienteRepository.findById(request.getClienteId())

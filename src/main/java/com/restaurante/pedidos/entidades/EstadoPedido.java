@@ -1,4 +1,4 @@
-package com.restaurante.pedidos.entity;
+package com.restaurante.pedidos.entidades;
 
 public enum EstadoPedido {
     PENDIENTE,

@@ -1,4 +1,4 @@
-package com.restaurante.pedidos.entity;
+package com.restaurante.pedidos.entidades;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
@@ -27,7 +27,12 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(
+    mappedBy = "pedido",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true,
+    fetch = FetchType.EAGER
+    )
     private List<DetallePedido> detalles = new ArrayList<>();
 
     public Pedido() {}

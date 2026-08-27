@@ -1,7 +1,8 @@
-package com.restaurante.pedidos.controller;
+package com.restaurante.pedidos.controladores;
 
-import com.restaurante.pedidos.entity.Cliente;
-import com.restaurante.pedidos.service.ClienteService;
+import com.restaurante.pedidos.entidades.Cliente;
+import com.restaurante.pedidos.servicio.ClienteSer;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/clientes")
 @CrossOrigin
-public class ClienteController {
-    private final ClienteService service;
-    public ClienteController(ClienteService service) { this.service = service; }
+public class ClienteCont {
+    private final ClienteSer service;
+    public ClienteCont(ClienteSer service) { this.service = service; }
 
     @GetMapping public List<Cliente> listar() { return service.listar(); }
     @GetMapping("/{id}") public Cliente obtener(@PathVariable Long id) { return service.obtener(id); }

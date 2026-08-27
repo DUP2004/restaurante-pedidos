@@ -1,4 +1,4 @@
-package com.restaurante.pedidos.entity;
+package com.restaurante.pedidos.entidades;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;

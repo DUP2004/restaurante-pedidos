@@ -1,0 +1,88 @@
+<section id="pedidos" class="seccion">
+
+    <div class="encabezado-seccion">
+
+        <h2>Pedidos</h2>
+
+
+        <button
+            class="btn"
+            onclick="mostrarFormularioPedido()"
+        >
+            + Nuevo pedido
+        </button>
+
+
+        <button
+            class="btn"
+            onclick="cargarPedidos()"
+        >
+            Actualizar pedidos
+        </button>
+
+    </div>
+
+
+    <!-- FORMULARIO -->
+
+    <div id="formularioPedido" class="formulario oculto">
+
+        <h3>Nuevo pedido</h3>
+
+
+        <label>Cliente</label>
+
+        <select id="pedidoCliente">
+
+            <option value="">
+                Seleccione un cliente
+            </option>
+
+        </select>
+
+
+        <h3>Productos</h3>
+
+
+        <div id="detallesPedido"></div>
+
+
+        <button
+            type="button"
+            class="btn secundario"
+            onclick="agregarProductoPedido()"
+        >
+            + Agregar producto
+        </button>
+
+
+        <br><br>
+
+
+        <button
+            class="btn"
+            onclick="guardarPedido()"
+        >
+            Crear pedido
+        </button>
+
+
+        <button
+            class="btn cancelar"
+            onclick="cancelarPedido()"
+        >
+            Cancelar
+        </button>
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div id="listaPedidos" class="contenedor">
+
+        Cargando pedidos...
+
+    </div>
+
+</section>

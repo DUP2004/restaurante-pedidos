@@ -1,18 +1,19 @@
-package com.restaurante.pedidos.service;
+package com.restaurante.pedidos.servicio;
 
-import com.restaurante.pedidos.entity.Categoria;
-import com.restaurante.pedidos.entity.Producto;
-import com.restaurante.pedidos.repository.CategoriaRepository;
-import com.restaurante.pedidos.repository.ProductoRepository;
+import com.restaurante.pedidos.entidades.Categoria;
+import com.restaurante.pedidos.entidades.Producto;
+import com.restaurante.pedidos.repositorio.CategoriaRepository;
+import com.restaurante.pedidos.repositorio.ProductoRepository;
+
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProductoService {
+public class ProductoSer {
     private final ProductoRepository repository;
     private final CategoriaRepository categoriaRepository;
 
-    public ProductoService(ProductoRepository repository, CategoriaRepository categoriaRepository) {
+    public ProductoSer(ProductoRepository repository, CategoriaRepository categoriaRepository) {
         this.repository = repository;
         this.categoriaRepository = categoriaRepository;
     }

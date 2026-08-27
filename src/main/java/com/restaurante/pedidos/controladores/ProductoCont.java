@@ -1,7 +1,8 @@
-package com.restaurante.pedidos.controller;
+package com.restaurante.pedidos.controladores;
 
-import com.restaurante.pedidos.entity.Producto;
-import com.restaurante.pedidos.service.ProductoService;
+import com.restaurante.pedidos.entidades.Producto;
+import com.restaurante.pedidos.servicio.ProductoSer;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/productos")
 @CrossOrigin
-public class ProductoController {
-    private final ProductoService service;
-    public ProductoController(ProductoService service) { this.service = service; }
+public class ProductoCont {
+    private final ProductoSer service;
+    public ProductoCont(ProductoSer service) { this.service = service; }
 
     @GetMapping public List<Producto> listar() { return service.listar(); }
     @GetMapping("/{id}") public Producto obtener(@PathVariable Long id) { return service.obtener(id); }

@@ -1,7 +1,8 @@
-package com.restaurante.pedidos.controller;
+package com.restaurante.pedidos.controladores;
 
-import com.restaurante.pedidos.entity.Categoria;
-import com.restaurante.pedidos.service.CategoriaService;
+import com.restaurante.pedidos.entidades.Categoria;
+import com.restaurante.pedidos.servicio.CategoriaSer;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +11,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categorias")
 @CrossOrigin
-public class CategoriaController {
-    private final CategoriaService service;
-    public CategoriaController(CategoriaService service) { this.service = service; }
+public class CategoriaCont {
+    private final CategoriaSer service;
+    public CategoriaCont(CategoriaSer service) { this.service = service; }
 
     @GetMapping public List<Categoria> listar() { return service.listar(); }
     @GetMapping("/{id}") public Categoria obtener(@PathVariable Long id) { return service.obtener(id); }
