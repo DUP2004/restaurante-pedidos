@@ -16,7 +16,7 @@ public class Pedido {
     @Column(nullable = false)
     private LocalDateTime fecha = LocalDateTime.now();
 
-    @Column(name = "codigo_seguimiento", nullable = false, unique = true, length = 36)
+    @Column(name = "codigo_seguimiento", unique = true, length = 36)
     private String codigoSeguimiento;
 
     @Enumerated(EnumType.STRING)
