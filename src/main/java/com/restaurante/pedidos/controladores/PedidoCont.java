@@ -1,10 +1,11 @@
 package com.restaurante.pedidos.controladores;
 
+import com.restaurante.pedidos.dto.PedidoPublicoRequest;
+import com.restaurante.pedidos.dto.PedidoPublicoResponse;
 import com.restaurante.pedidos.dto.PedidoRequest;
 import com.restaurante.pedidos.entidades.EstadoPedido;
 import com.restaurante.pedidos.entidades.Pedido;
 import com.restaurante.pedidos.servicio.PedidoSer;
-
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,17 @@ public class PedidoCont {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Pedido crear(@Valid @RequestBody PedidoRequest request) {
-        return service.crear(request);
+    public Pedido crear(@Valid @RequestBody PedidoRequest request) { return service.crear(request); }
+
+    @PostMapping("/publicos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PedidoPublicoResponse crearPublico(@Valid @RequestBody PedidoPublicoRequest request) {
+        return service.crearPublico(request);
+    }
+
+    @GetMapping("/seguimiento/{codigo}")
+    public PedidoPublicoResponse seguimientoPublico(@PathVariable String codigo) {
+        return service.seguimientoPublico(codigo);
     }
 
     @PutMapping("/{id}/estado")
