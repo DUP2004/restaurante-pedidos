@@ -50,8 +50,6 @@ public class PedidoSer {
         cliente = clienteRepository.save(cliente);
 
         Pedido pedido = crearConCliente(cliente, request.getDetalles());
-        pedido.setCodigoSeguimiento(UUID.randomUUID().toString());
-        pedido = pedidoRepository.save(pedido);
         return PedidoPublicoResponse.desde(pedido);
     }
 
