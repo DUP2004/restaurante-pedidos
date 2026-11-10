@@ -351,7 +351,7 @@
           `<li class="${i < indice ? "hecho" : i === indice ? "actual" : ""}">${nombre}</li>`).join("")}
       </ol>`;
     const detalle = (p.detalles || []).map((d) =>
-      `<li>${d.cantidad} × ${esc(d.producto.nombre)}</li>`).join("");
+      `<li>${d.cantidad} × ${esc(d.nombre || d.producto?.nombre)}</li>`).join("");
     return `
       <p class="estado-titulo">Pedido N.º ${p.id}: ${esc(titulo)}</p>
       <p style="margin:0">${esc(texto)}</p>
