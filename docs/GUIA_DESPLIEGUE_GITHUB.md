@@ -1,46 +1,80 @@
-# Guía para configurar publicación y despliegue
+# Guía de publicación y despliegue
 
-## A. Subir el proyecto a GitHub
-1. Crear un repositorio en GitHub.
-2. Abrir una terminal en la carpeta del proyecto (donde está `pom.xml`).
-3. Ejecutar, reemplazando la URL por la de tu repositorio:
+## 1. Qué está automatizado actualmente
 
-```bash
-git init
-git add .
-git commit -m "Preparar CI y CD de Casa Sabor"
-git branch -M main
-git remote add origin https://github.com/USUARIO/REPOSITORIO.git
-git push -u origin main
-```
+El repositorio utiliza dos workflows:
 
-4. En GitHub, abrir la pestaña **Actions**. El workflow `Integracion continua` debe iniciar y ejecutar las pruebas.
-5. En **Settings > Actions > General**, verificar que los workflows tengan permiso para leer el repositorio. El workflow CD necesita permiso de escritura de paquetes, ya declarado en el YAML.
+- `.github/workflows/ci.yml`: ejecuta `mvn clean test` y empaqueta la aplicación en cada push o pull request hacia `main` o `master`.
+- `.github/workflows/cd.yml`: vuelve a ejecutar las pruebas y publica una imagen Docker en GitHub Container Registry (GHCR) al hacer push a `main` o publicar una etiqueta `v*`.
 
-## B. Publicación automática de imagen Docker (GHCR)
-El workflow `.github/workflows/cd.yml` ejecuta pruebas y, si pasan, construye y publica la imagen en GitHub Container Registry (`ghcr.io`) al hacer push a `main` o publicar una etiqueta `v*`. Usa `GITHUB_TOKEN`; no hace falta crear un token personal para esta publicación.
+La publicación de la imagen en GHCR no significa que exista una página web desplegada. El workflow CD actual no crea un servicio en Render ni configura una base de datos externa.
 
-La imagen queda con las etiquetas `latest` y el SHA del commit. Puede ser necesario cambiar la visibilidad del paquete en GitHub Packages según el uso que se le dará.
+## 2. Preparar variables de producción
 
-## C. Despliegue real a un servidor por SSH
-La publicación de la imagen no significa que ya esté instalada en un servidor. Para desplegar en una VPS necesitas:
-- Una VPS Linux con Docker y Docker Compose instalados.
-- Un usuario SSH que pueda ejecutar Docker.
-- Un directorio de despliegue, por ejemplo `/opt/casa-sabor`.
-- Un `docker-compose.yml` de producción que use la imagen publicada y variables de entorno seguras.
+La aplicación lee estas variables:
 
-En GitHub entra a **Settings > Secrets and variables > Actions > New repository secret**. Crea estos secretos:
-
-| Secreto | Valor |
+| Variable | Descripción |
 |---|---|
-| `DEPLOY_HOST` | IP o dominio público de tu servidor. |
-| `DEPLOY_USER` | Usuario SSH del servidor. |
-| `DEPLOY_SSH_KEY` | Clave privada SSH completa; nunca la subas al repositorio. |
-| `DEPLOY_PATH` | Ruta absoluta de la carpeta de despliegue. |
+| `PORT` | Puerto HTTP que asigna el proveedor |
+| `SPRING_DATASOURCE_URL` | URL JDBC de la base MySQL compatible |
+| `SPRING_DATASOURCE_USERNAME` | Usuario de base de datos |
+| `SPRING_DATASOURCE_PASSWORD` | Contraseña de base de datos |
+| `ADMIN_USERNAME` | Usuario del panel |
+| `ADMIN_PASSWORD` | Contraseña fuerte del panel |
+| `DDL_AUTO` | Estrategia JPA; revisar antes de producción |
+| `SHOW_SQL` | Activar/desactivar SQL en logs |
 
-La clave pública correspondiente debe estar autorizada en `~/.ssh/authorized_keys` del servidor. Comprueba primero que puedes conectarte desde tu equipo con SSH.
+No guardes secretos en GitHub, Dockerfile, README ni archivos versionados. En Render, configura estos valores en la sección Environment del servicio.
 
-**Importante:** el workflow incluido publica la imagen Docker; no ejecuta todavía la conexión SSH ni consume esos cuatro secretos. El despliegue SSH debe añadirse cuando tengas servidor, compose de producción y credenciales. No agregues secretos hasta tener esos datos. No uses `localhost` como `DEPLOY_HOST`.
+## 3. Despliegue de demostración con Render
 
-## D. Variables de producción
-No publiques contraseñas en `application.properties`. Configura en el servidor las variables `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `ADMIN_USERNAME` y `ADMIN_PASSWORD`. Usa claves fuertes y restringe el acceso a los secretos.
+La aplicación incluye Dockerfile, por lo que se puede crear un **Web Service** desde el repositorio:
+
+1. Crear una cuenta en Render y autorizar el acceso al repositorio GitHub.
+2. Seleccionar **New > Web Service** y conectar `DUP2004/restaurante-pedidos`.
+3. Elegir despliegue desde Dockerfile (ruta `./Dockerfile`).
+4. Configurar las variables anteriores con credenciales reales y una URL JDBC válida de un proveedor MySQL compatible.
+5. Iniciar el despliegue y revisar los logs hasta que Spring Boot indique que inició correctamente.
+6. Probar la URL pública, `/login.html`, la consulta de menú y un pedido de prueba.
+
+**Base de datos:** Render ofrece PostgreSQL administrado, no un servicio MySQL administrado equivalente. Como este proyecto usa el driver MySQL, para mantenerlo sin migración se necesita un proveedor externo compatible con MySQL y conectividad desde Render. Comprueba sus límites, TLS, lista de IP permitidas y política de suspensión antes de elegirlo. Alternativamente, migra el proyecto a PostgreSQL y adapta el driver/configuración.
+
+**Límite del plan gratuito de Render:** los Web Services gratuitos se suspenden después de 15 minutos sin tráfico entrante y pueden tardar alrededor de un minuto en reactivarse. El sistema de archivos local es efímero. Por ello, este plan sirve para una demostración académica, no para operación continua ni para pedidos reales con garantía de disponibilidad. Consulta [documentación oficial de Render](https://render.com/docs/free).
+
+## 4. Publicar imagen Docker en GHCR
+
+El workflow CD utiliza `GITHUB_TOKEN`, sin necesidad de crear un token personal:
+
+1. Hacer push a `main` o publicar una etiqueta `v*`.
+2. Abrir la pestaña **Actions** y revisar el workflow **Entrega continua - imagen Docker**.
+3. Si termina correctamente, consultar el paquete en GitHub Packages del propietario.
+4. La imagen se etiqueta como `latest` y con el SHA del commit.
+
+Puede ser necesario ajustar la visibilidad del paquete según quién vaya a descargarlo.
+
+## 5. Despliegue en VPS por SSH (no configurado todavía)
+
+Para un servidor propio se requiere una VPS Linux con Docker y Docker Compose, acceso SSH y un compose de producción. Se podrían configurar estos secretos en **Settings > Secrets and variables > Actions**:
+
+- `DEPLOY_HOST`: IP o dominio del servidor.
+- `DEPLOY_USER`: usuario SSH.
+- `DEPLOY_SSH_KEY`: clave privada SSH.
+- `DEPLOY_PATH`: directorio absoluto de despliegue.
+
+La clave pública debe estar autorizada en el servidor. El workflow actual **no consume estos secretos ni realiza despliegue SSH**; solo publica la imagen. No agregues secretos hasta que exista un servidor y se implemente ese paso.
+
+## 6. Lista de verificación antes de compartir una demo
+
+- [ ] Base de datos externa creada y accesible.
+- [ ] Variables JDBC configuradas correctamente.
+- [ ] Contraseña administrativa única y segura.
+- [ ] Servicio desplegado y logs sin errores.
+- [ ] Inicio de sesión y cierre de sesión comprobados.
+- [ ] Menú público y creación de pedido probados.
+- [ ] Panel administrativo protegido.
+- [ ] Copia de seguridad y restauración de base de datos consideradas.
+- [ ] CSRF, CORS y HTTPS revisados antes de usar datos reales.
+
+## 7. Seguridad
+
+La configuración actual desactiva CSRF para compatibilidad con los formularios JavaScript del prototipo. No debe considerarse una configuración final para producción. Antes de procesar información real, habilita CSRF e integra el token en las solicitudes, restringe CORS, revisa autorización y usa un usuario MySQL con privilegios mínimos. Para un despliegue serio, reemplaza `ddl-auto=update` por migraciones versionadas y una estrategia controlada de cambios de esquema.
