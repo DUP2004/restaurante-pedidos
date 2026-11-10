@@ -71,7 +71,7 @@
             <ol class="pasos" aria-label="Cómo hacer tu pedido">
                 <li><span><strong>Elige tus platos</strong>Agrégalos desde la carta, tantos como quieras.</span></li>
                 <li><span><strong>Confirma con tus datos</strong>Te pedimos nombre, correo y teléfono. Recibes un número de pedido.</span></li>
-                <li><span><strong>Sigue el estado y pasa a recogerlo</strong>Con tu número ves si está en preparación o listo.</span></li>
+                <li><span><strong>Sigue el estado y pasa a recogerlo</strong>Con tu código privado puedes consultar si está en preparación o listo.</span></li>
             </ol>
         </div>
     </section>
@@ -148,8 +148,8 @@
     <h2 id="segTitulo">Seguir mi pedido</h2>
     <form class="seg-form" id="formSeguimiento" novalidate>
         <div class="campo">
-            <label for="segNumero">Número de pedido</label>
-            <input id="segNumero" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="Ejemplo: 12">
+            <label for="segNumero">Código privado de seguimiento</label>
+            <input id="segNumero" type="text" inputmode="text" autocomplete="off" placeholder="Pega aquí el código que recibiste" maxlength="36">
         </div>
         <button type="submit" class="boton boton-primario">Consultar</button>
     </form>
