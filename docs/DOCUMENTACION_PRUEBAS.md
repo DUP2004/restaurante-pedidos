@@ -1,86 +1,89 @@
-# Documentación de pruebas – Casa Sabor
+# Documentación de pruebas — Casa Sabor
 
-## 1. Objetivo
-Documentar las pruebas automatizadas existentes y las pruebas manuales propuestas para verificar las funciones principales del sistema de pedidos.
+## 1. Objetivo y alcance
+
+Definir pruebas automatizadas y manuales para verificar validación, reglas de pedidos, autenticación, operaciones administrativas, flujo público y despliegue. No marcar como aprobada una prueba manual hasta ejecutarla y conservar evidencia.
 
 ## 2. Entorno
-- Aplicación: Spring Boot 3.5.4.
-- Lenguaje: Java 17.
-- Persistencia: MySQL.
-- Pruebas: JUnit 5, Mockito y Jakarta Bean Validation mediante `spring-boot-starter-test`.
-- Ejecución: `mvn clean test`.
 
-## 3. Pruebas automatizadas presentes en el proyecto
+- Java 17, Spring Boot 3.5.4 y Maven.
+- JUnit 5, Mockito y Jakarta Bean Validation mediante `spring-boot-starter-test`.
+- Base de datos MySQL 8.x o TiDB compatible.
+- Local: `mvn clean test`.
+- CI: GitHub Actions, workflow `.github/workflows/ci.yml`.
 
-### 3.1 Validación de DetallePedidoRequest
+## 3. Pruebas automatizadas existentes
+
+### Validación de detalle de pedido
+
 Archivo: `src/test/java/com/restaurante/pedidos/dto/DetallePedidoRequestValidationTest.java`.
 
 | ID | Escenario | Resultado esperado |
 |---|---|---|
-| VAL-01 | Cantidad positiva y producto informado | El DTO no presenta errores de validación. |
-| VAL-02 | Cantidad igual a cero | Se detecta error en el campo cantidad. |
-| VAL-03 | Cantidad negativa | Se detecta error en el campo cantidad. |
-| VAL-04 | Producto sin informar | Se detecta error en productoId. |
+| VAL-01 | Producto y cantidad positiva | Sin errores de validación |
+| VAL-02 | Cantidad cero | Error en cantidad |
+| VAL-03 | Cantidad negativa | Error en cantidad |
+| VAL-04 | Producto no informado | Error en productoId |
 
-### 3.2 Servicio de pedidos
+### Servicio de pedidos
+
 Archivo: `src/test/java/com/restaurante/pedidos/servicio/PedidoSerTest.java`.
 
 | ID | Escenario | Resultado esperado |
 |---|---|---|
-| PED-01 | Crear pedido con dos productos y cantidades | Se guardan los detalles y se calcula total 89.50 para los datos de prueba. |
-| PED-02 | Crear pedido con cliente inexistente | Se lanza `Cliente no encontrado` y no se guarda. |
-| PED-03 | Crear pedido con producto inexistente | Se informa que el producto no existe y no se guarda. |
-| PED-04 | Crear pedido con producto no disponible | Se rechaza la operación y no se guarda. |
-| PED-05 | Cambiar estado de pedido existente | Se persiste el estado solicitado (LISTO en el caso de prueba). |
-| PED-06 | Consultar pedido inexistente | Se informa `Pedido no encontrado`. |
+| PED-01 | Pedido con varios productos | Detalles guardados y total calculado |
+| PED-02 | Cliente inexistente | Se rechaza la operación |
+| PED-03 | Producto inexistente | Se rechaza la operación |
+| PED-04 | Producto no disponible | Se rechaza la operación |
+| PED-05 | Cambio de estado | Nuevo estado persistido |
+| PED-06 | Pedido inexistente | Se informa que no existe |
 
-## 4. Pruebas manuales funcionales propuestas
-Ejecutar con la aplicación levantada y MySQL disponible. Registrar el resultado real y adjuntar capturas en la entrega.
+## 4. Pruebas manuales funcionales
 
-| ID | Módulo | Pasos | Resultado esperado |
+Ejecutar en la URL local o de Render usando datos ficticios:
+
+| ID | Módulo | Procedimiento | Resultado esperado |
 |---|---|---|---|
-| MAN-01 | Login | Abrir `/login.html` e ingresar credenciales válidas | Acceso al panel administrativo. |
-| MAN-02 | Login | Ingresar contraseña incorrecta | No se concede acceso y se muestra error. |
-| MAN-03 | Sesión | Cerrar sesión y volver a `/admin.html` | El panel queda protegido y solicita autenticación. |
-| MAN-04 | Productos | Crear, editar y eliminar un producto | Los cambios se reflejan en el listado y base de datos. |
-| MAN-05 | Categorías | Registrar y modificar una categoría | Los datos se muestran correctamente. |
-| MAN-06 | Clientes | Registrar un cliente y consultar el listado | El cliente aparece con sus datos. |
-| MAN-07 | Pedidos | Registrar pedido con cliente y productos válidos | El pedido se crea con total calculado. |
-| MAN-08 | Pedidos | Cambiar estado de un pedido | El nuevo estado se visualiza al actualizar. |
-| MAN-09 | Responsive | Abrir el panel en ancho móvil | Navegación y formularios se adaptan sin desbordamiento horizontal. |
-| MAN-10 | Navegación | Recorrer Resumen, Pedidos, Productos, Categorías y Clientes | Cada sección se carga y conserva sus acciones. |
+| MAN-01 | Carta pública | Abrir la página sin iniciar sesión | Productos y categorías visibles |
+| MAN-02 | Pedido público | Agregar productos y enviar datos válidos | Pedido creado sin login |
+| MAN-03 | Validación | Enviar formulario incompleto o correo inválido | Mensaje de validación; no se crea pedido |
+| MAN-04 | Disponibilidad | Intentar pedir producto agotado | Backend rechaza pedido |
+| MAN-05 | Seguimiento | Consultar con código privado generado | Muestra estado, cantidades y total sin exponer datos del cliente |
+| MAN-06 | Seguimiento inválido | Usar código incorrecto | Mensaje de pedido no encontrado |
+| MAN-07 | Privacidad | Consultar `GET /api/clientes` sin login | HTTP 401/403 |
+| MAN-08 | Privacidad | Consultar `GET /api/pedidos` sin login | HTTP 401/403 |
+| MAN-09 | Login | Ingresar credenciales válidas | Acceso al panel |
+| MAN-10 | Login | Ingresar contraseña incorrecta | Acceso denegado |
+| MAN-11 | Sesión | Cerrar sesión y abrir `/admin.html` | Solicita autenticación |
+| MAN-12 | Productos | Crear, editar y eliminar producto | Cambios persistidos |
+| MAN-13 | Categorías | Crear y modificar categoría | Cambios persistidos |
+| MAN-14 | Clientes | Registrar y consultar desde panel | Datos visibles solo al administrador |
+| MAN-15 | Pedidos | Cambiar estado en el panel | Estado actualizado en seguimiento |
+| MAN-16 | Persistencia | Reiniciar Render y volver a consultar | Datos conservados en TiDB |
+| MAN-17 | Responsive | Usar panel y sitio en móvil | Sin desbordamiento horizontal |
 
-## 5. Cómo ejecutar las pruebas automatizadas
+## 5. Ejecución
+
 Desde la carpeta que contiene `pom.xml`:
 
 ```bash
 mvn clean test
 ```
 
-En Windows PowerShell también se puede ejecutar el mismo comando desde la terminal de VS Code. Si el proyecto incorpora Maven Wrapper, usar `./mvnw clean test` o `mvnw.cmd clean test`.
+Los reportes quedan en `target/surefire-reports/`. CI ejecuta las pruebas en cada push y pull request. La construcción Docker actual utiliza `-DskipTests`, por lo que la validación de pruebas depende del workflow CI.
 
-Los reportes de JUnit quedan en `target/surefire-reports/`. Revisar los archivos `.txt` y `.xml` para conocer pruebas ejecutadas, fallidas y errores.
+## 6. Registro de resultados
 
-## 6. Integración continua
-El workflow `.github/workflows/ci.yml` se ejecuta en cada push y pull request hacia `main` o `master`. Configura Java 17, ejecuta `mvn clean test` y construye el JAR. Si una prueba falla, el job queda fallido y no debe integrarse ese cambio.
-
-## 7. Plantilla de evidencia y resultados
-Completar esta tabla después de ejecutar los casos manuales; no registrar como aprobada una prueba que no se haya ejecutado.
-
-| ID | Fecha | Resultado (Aprobada/Fallida/Pendiente) | Evidencia / observación |
+| ID | Fecha | Estado (Aprobada/Fallida/Pendiente) | Evidencia |
 |---|---|---|---|
-| MAN-01 | | Pendiente | |
-| MAN-02 | | Pendiente | |
-| MAN-03 | | Pendiente | |
-| MAN-04 | | Pendiente | |
-| MAN-05 | | Pendiente | |
-| MAN-06 | | Pendiente | |
-| MAN-07 | | Pendiente | |
-| MAN-08 | | Pendiente | |
-| MAN-09 | | Pendiente | |
-| MAN-10 | | Pendiente | |
+| MAN-01 a MAN-17 | | Pendiente | |
 
-## 8. Criterio de aceptación
-- Todas las pruebas automatizadas deben finalizar correctamente.
-- Las pruebas manuales críticas de autenticación, sesión, CRUD y pedidos deben aprobarse.
-- No debe publicarse una versión si el workflow de CI falla.
+## 7. Criterios de aceptación
+
+- Todas las pruebas automatizadas terminan correctamente.
+- MAN-01 a MAN-17 se ejecutan y documentan.
+- Los endpoints administrativos no son accesibles sin sesión.
+- El cliente puede crear y seguir su pedido usando un código aleatorio privado.
+- Los datos sobreviven a un reinicio de la aplicación.
+- El workflow CI finaliza en verde.
+- No se declara aptitud comercial hasta resolver los pendientes de seguridad, respaldo y operación.
