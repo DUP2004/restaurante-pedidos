@@ -16,6 +16,9 @@ public class Pedido {
     @Column(nullable = false)
     private LocalDateTime fecha = LocalDateTime.now();
 
+    @Column(name = "codigo_seguimiento", nullable = false, unique = true, length = 36)
+    private String codigoSeguimiento;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoPedido estado = EstadoPedido.PENDIENTE;
@@ -27,24 +30,20 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(
-    mappedBy = "pedido",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true,
-    fetch = FetchType.EAGER
-    )
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DetallePedido> detalles = new ArrayList<>();
 
     public Pedido() {}
-
     public Long getId() { return id; }
     public LocalDateTime getFecha() { return fecha; }
+    public String getCodigoSeguimiento() { return codigoSeguimiento; }
     public EstadoPedido getEstado() { return estado; }
     public BigDecimal getTotal() { return total; }
     public Cliente getCliente() { return cliente; }
     public List<DetallePedido> getDetalles() { return detalles; }
     public void setId(Long id) { this.id = id; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+    public void setCodigoSeguimiento(String codigoSeguimiento) { this.codigoSeguimiento = codigoSeguimiento; }
     public void setEstado(EstadoPedido estado) { this.estado = estado; }
     public void setTotal(BigDecimal total) { this.total = total; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
