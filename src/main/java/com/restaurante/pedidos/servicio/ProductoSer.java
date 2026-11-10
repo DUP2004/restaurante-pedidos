@@ -4,8 +4,8 @@ import com.restaurante.pedidos.entidades.Categoria;
 import com.restaurante.pedidos.entidades.Producto;
 import com.restaurante.pedidos.repositorio.CategoriaRepository;
 import com.restaurante.pedidos.repositorio.ProductoRepository;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -38,6 +38,23 @@ public class ProductoSer {
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
         p.setCategoria(categoria);
         return repository.save(p);
+    }
+
+    @Transactional
+    public Producto guardarImagen(Long id, byte[] datos, String tipoDeclarado) {
+        String tipoValidado = ImagenProductoValidator.validar(datos, tipoDeclarado);
+        Producto producto = obtener(id);
+        producto.setImagenDatos(datos.clone());
+        producto.setImagenTipo(tipoValidado);
+        return repository.save(producto);
+    }
+
+    @Transactional
+    public Producto eliminarImagen(Long id) {
+        Producto producto = obtener(id);
+        producto.setImagenDatos(null);
+        producto.setImagenTipo(null);
+        return repository.save(producto);
     }
 
     public void eliminar(Long id) { repository.delete(obtener(id)); }
