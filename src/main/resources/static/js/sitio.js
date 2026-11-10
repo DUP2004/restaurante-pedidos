@@ -127,8 +127,10 @@
   }
 
   function platoHTML(p) {
+    const imagen = p.imagenUrl ? esc(p.imagenUrl) : "";
     return `
       <li class="plato${p.disponible ? "" : " agotado"}" data-id="${p.id}">
+        ${imagen ? `<div class="plato-imagen"><img src="${imagen}" alt="${esc(p.nombre)}" loading="lazy" decoding="async"></div>` : ""}
         <div class="plato-fila">
           <h4>${esc(p.nombre)}</h4>
           <span class="puntos" aria-hidden="true"></span>
