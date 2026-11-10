@@ -122,6 +122,7 @@ pom.xml
 - [Referencia de API REST](docs/API_REST.md)
 - [Manual de usuario](docs/MANUAL_USUARIO.md)
 - [Documentación de pruebas](docs/DOCUMENTACION_PRUEBAS.md)
+- [Flujo público de pedidos y privacidad](docs/FLUJO_PUBLICO_PEDIDOS.md)
 - [Guía de despliegue](docs/GUIA_DESPLIEGUE_GITHUB.md)
 - [Guía de GitHub Desktop](docs/GUIA_GITHUB_DESKTOP.md)
 
@@ -131,4 +132,4 @@ La configuración actual utiliza autenticación de sesión para el panel y prote
 
 ## Estado del proyecto
 
-Proyecto académico demostrativo. La publicación de una imagen en GitHub Container Registry no equivale a tener una instancia web desplegada ni una base de datos administrada configurada. Consulta la guía de despliegue y completa las variables del proveedor antes de compartir una URL pública.
+Proyecto académico demostrativo. URL de demostración comunicada: https://restaurante-pedidos-o7e5.onrender.com. La instancia se inició correctamente y los logs compartidos mostraron una conexión a TiDB; las pruebas funcionales completas deben registrarse en `docs/DOCUMENTACION_PRUEBAS.md`. La publicación de una imagen en GitHub Container Registry no equivale a desplegar Render.
