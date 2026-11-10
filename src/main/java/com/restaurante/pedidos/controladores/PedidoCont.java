@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pedidos")
-@CrossOrigin
 public class PedidoCont {
     private final PedidoSer service;
     public PedidoCont(PedidoSer service) { this.service = service; }
