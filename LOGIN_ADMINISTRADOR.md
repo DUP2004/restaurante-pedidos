@@ -1,20 +1,32 @@
-# Login del administrador — Casa Sabor
+# Acceso al panel administrador — Casa Sabor
 
-## Cómo ingresar
-1. Ejecuta la aplicación Spring Boot normalmente.
+## Iniciar sesión en desarrollo local
+
+1. Inicia MySQL y ejecuta la aplicación Spring Boot.
 2. Abre `http://localhost:8080/login.html`.
-3. Ingresa estas credenciales iniciales:
+3. Usa las credenciales predeterminadas de desarrollo:
    - Usuario: `admin`
-   - Contraseña: `CambiarEstaClave123!`
-4. Si las credenciales son correctas, se abrirá `/admin.html`. Si son incorrectas, aparecerá un mensaje de error.
-5. Para cerrar sesión, abre `http://localhost:8080/logout`.
+   - Contraseña: `admin123`
+4. Al autenticarte correctamente, la aplicación redirige a `/admin.html`.
+5. Para cerrar sesión, utiliza la opción de cierre de sesión del panel o visita `/logout`.
 
 ## Cambiar las credenciales
-Puedes definir variables de entorno antes de iniciar Spring Boot:
-- `ADMIN_USERNAME`: usuario administrador.
-- `ADMIN_PASSWORD`: contraseña administrador.
 
-Los valores por defecto son solo para probar localmente. Cámbialos antes de publicar el sistema en Internet.
+Define estas variables de entorno antes de iniciar la aplicación:
 
-## Nota de seguridad
-El panel y las rutas administrativas de `/api/**` requieren una sesión autenticada. La consulta pública de productos/categorías y el envío de un pedido se mantienen permitidos para que el sitio de clientes siga funcionando. Para una publicación real, se recomienda habilitar protección CSRF y revisar los permisos públicos según el flujo definitivo de pedidos.
+- `ADMIN_USERNAME`: nombre de usuario administrador.
+- `ADMIN_PASSWORD`: contraseña del administrador.
+
+Ejemplo en PowerShell:
+
+```powershell
+$env:ADMIN_USERNAME="administrador"
+$env:ADMIN_PASSWORD="Escribe-una-clave-larga-y-unica"
+mvn spring-boot:run
+```
+
+En Docker Compose, puedes establecerlas en un archivo `.env` local que no debe subirse a GitHub. En un proveedor cloud, configúralas en la sección de variables/secretos del servicio.
+
+## Seguridad
+
+Los valores predeterminados solo sirven para desarrollo local. No publiques la aplicación con `admin/admin123`. Utiliza HTTPS y una contraseña fuerte, y revisa la protección CSRF antes de utilizar el sistema con información real.
