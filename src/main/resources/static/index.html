@@ -1,96 +1,166 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        Restaurante - Gestión de Pedidos
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="/css/estilos.css"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Sabor | Carta y pedidos</title>
+    <meta name="description" content="Mira la carta y haz tu pedido en línea para recoger en el local.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap">
+    <link rel="stylesheet" href="/css/sitio.css">
 </head>
-
 <body>
 
-    <header>
-
-        <h1>
-            🍔 Restaurante
-        </h1>
-
-        <p>
-            Sistema de gestión de pedidos
-        </p>
-
-    </header>
-
-
-    <nav>
-
-        <button onclick="cargarPagina('inicio')">
-            🏠 Inicio
+<header class="barra">
+    <div class="ancho barra-in">
+        <a class="marca" href="#inicio" data-cfg="nombre">Casa Sabor</a>
+        <nav class="menu" aria-label="Principal">
+            <a href="#carta">Carta</a>
+            <a href="#nosotros">Nosotros</a>
+            <a href="#visitanos">Visítanos</a>
+        </nav>
+        <button type="button" class="boton-texto" id="btnSeguir">Seguir pedido</button>
+        <button type="button" class="boton-carrito" id="btnCarrito" aria-label="Abrir mi pedido">
+            Mi pedido <span class="contador" id="contadorCarrito">0</span>
         </button>
+    </div>
+</header>
 
-        <button onclick="cargarPagina('productos')">
-            🍔 Productos
-        </button>
+<main>
 
-        <button onclick="cargarPagina('categorias')">
-            📂 Categorías
-        </button>
+    <section class="hero" id="inicio">
+        <div class="ancho hero-in">
+            <div>
+                <h1 data-cfg="titular">Comida de casa, hecha al momento.</h1>
+                <p class="bajada" data-cfg="bajada">Elige tus platos, déjanos tus datos y los tendremos listos para que pases a recogerlos.</p>
+                <div class="hero-botones">
+                    <a class="boton boton-primario" href="#carta">Ver la carta</a>
+                    <button type="button" class="boton" id="btnHeroPedido">Armar mi pedido</button>
+                </div>
+            </div>
+            <div class="ticket-envoltorio">
+                <div class="ticket" aria-label="Platos de hoy">
+                    <h2>Hoy en la carta</h2>
+                    <div id="ticketLista"><p class="ticket-vacio">Cargando…</p></div>
+                    <a href="#carta">Ver la carta completa</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <button onclick="cargarPagina('clientes')">
-            👤 Clientes
-        </button>
+    <section class="carta" id="carta">
+        <div class="ancho">
+            <div class="carta-cab">
+                <h2>La carta</h2>
+                <p>Los pedidos son para recoger en el local. Los platos marcados como agotados no se pueden pedir por hoy.</p>
+            </div>
+            <div class="carta-layout">
+                <nav class="cat-nav" id="categoriasNav" aria-label="Categorías de la carta"></nav>
+                <div id="listaCarta"><p class="vacio">Cargando la carta…</p></div>
+            </div>
+        </div>
+    </section>
 
-        <button onclick="cargarPagina('pedidos')">
-            🛒 Pedidos
-        </button>
+    <section class="bloque" id="nosotros">
+        <div class="ancho bloque-in">
+            <div>
+                <h2>Cocina que se prepara al pedirla</h2>
+                <div id="textoNosotros"></div>
+            </div>
+            <ol class="pasos" aria-label="Cómo hacer tu pedido">
+                <li><span><strong>Elige tus platos</strong>Agrégalos desde la carta, tantos como quieras.</span></li>
+                <li><span><strong>Confirma con tus datos</strong>Te pedimos nombre, correo y teléfono. Recibes un número de pedido.</span></li>
+                <li><span><strong>Sigue el estado y pasa a recogerlo</strong>Con tu número ves si está en preparación o listo.</span></li>
+            </ol>
+        </div>
+    </section>
 
-    </nav>
+    <section class="visita" id="visitanos">
+        <div class="ancho">
+            <h2>Visítanos</h2>
+            <div class="visita-grid">
+                <div>
+                    <h3>Dirección</h3>
+                    <p id="cfgDireccion">Av. Principal 123</p>
+                </div>
+                <div>
+                    <h3>Horario</h3>
+                    <dl id="cfgHorario"></dl>
+                </div>
+                <div>
+                    <h3>Teléfono</h3>
+                    <p><a id="cfgTelefono" href="#">999 999 999</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
 
+</main>
 
-    <main id="contenido">
+<footer class="pie">
+    <div class="ancho pie-in">
+        <span>© <span id="anio"></span> <span data-cfg="nombre">Casa Sabor</span></span>
+        <a href="/login.html">Acceso administrador</a>
+    </div>
+</footer>
 
-        Cargando...
+<!-- ===== Mi pedido (cajón lateral) ===== -->
+<dialog class="cajon" id="carrito" aria-labelledby="carritoTitulo">
+    <div class="cajon-cab">
+        <h2 id="carritoTitulo">Mi pedido</h2>
+        <button type="button" class="cerrar" data-cerrar aria-label="Cerrar">&times;</button>
+    </div>
 
-    </main>
+    <div class="cajon-cuerpo">
 
+        <div id="carritoVacio" class="vacio-carrito">
+            <p>Todavía no has agregado platos.</p>
+            <button type="button" class="boton" data-cerrar-y-ir="#carta">Ver la carta</button>
+        </div>
 
-    <footer>
+        <form id="formPedido" novalidate hidden>
+            <ul class="lineas" id="carritoLineas"></ul>
+            <p class="total"><span>Total</span><span id="carritoTotal">S/ 0.00</span></p>
 
-        <p>
-            Sistema de Restaurante - Spring Boot
-        </p>
+            <h3>Tus datos</h3>
+            <div class="fila-2">
+                <div class="campo"><label for="cNombre">Nombre</label><input id="cNombre" autocomplete="given-name" required></div>
+                <div class="campo"><label for="cApellido">Apellido</label><input id="cApellido" autocomplete="family-name" required></div>
+            </div>
+            <div class="campo"><label for="cCorreo">Correo</label><input id="cCorreo" type="email" autocomplete="email" required></div>
+            <div class="campo"><label for="cTelefono">Teléfono</label><input id="cTelefono" type="tel" autocomplete="tel" required></div>
+            <p class="nota">Los pedidos son para recoger en el local. Usamos tu correo para reconocerte en tus próximos pedidos.</p>
 
-    </footer>
+            <p class="error" id="errorPedido" role="alert" hidden></p>
 
+            <div class="form-pie">
+                <button type="submit" class="boton boton-primario" id="btnConfirmar">Confirmar pedido</button>
+            </div>
+        </form>
 
-    <!-- JAVASCRIPT -->
+        <div id="carritoConfirmacion" class="confirmacion" hidden></div>
+    </div>
+</dialog>
 
-    <script src="/js/dashboard.js"></script>
+<!-- ===== Seguimiento ===== -->
+<dialog class="modal" id="seguimiento" aria-labelledby="segTitulo">
+    <h2 id="segTitulo">Seguir mi pedido</h2>
+    <form class="seg-form" id="formSeguimiento" novalidate>
+        <div class="campo">
+            <label for="segNumero">Número de pedido</label>
+            <input id="segNumero" type="number" min="1" step="1" inputmode="numeric" autocomplete="off" placeholder="Ejemplo: 12">
+        </div>
+        <button type="submit" class="boton boton-primario">Consultar</button>
+    </form>
+    <div id="segResultado" aria-live="polite"></div>
+    <p style="margin:1.25rem 0 0;text-align:right"><button type="button" class="boton" data-cerrar>Cerrar</button></p>
+</dialog>
 
-    <script src="/js/productos.js"></script>
+<p class="solo-lectura" id="aviso" role="status" aria-live="polite"></p>
+<noscript><p style="padding:1rem">Esta página necesita JavaScript para mostrar la carta y recibir pedidos.</p></noscript>
 
-    <script src="/js/categorias.js"></script>
-
-    <script src="/js/clientes.js"></script>
-
-    <script src="/js/pedidos.js"></script>
-
-    <script src="/js/app.js"></script>
-
+<script src="/js/config.js"></script>
+<script src="/js/sitio.js"></script>
 </body>
-
 </html>

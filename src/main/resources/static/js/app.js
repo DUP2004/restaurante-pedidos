@@ -6,6 +6,10 @@ async function cargarPagina(nombre) {
 
     const contenido = document.getElementById("contenido");
 
+    document.querySelectorAll("nav button").forEach(boton => {
+        boton.classList.toggle("activo", boton.dataset.pagina === nombre);
+    });
+
     contenido.innerHTML = "Cargando...";
 
     try {
