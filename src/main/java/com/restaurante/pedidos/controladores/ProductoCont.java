@@ -43,7 +43,7 @@ public class ProductoCont {
         return ResponseEntity.ok()
                 .contentType(tipo)
                 .cacheControl(CacheControl.noCache())
-                .header(HttpHeaders.X_CONTENT_TYPE_OPTIONS, "nosniff")
+                .header("X-Content-Type-Options", "nosniff")
                 .body(datos);
     }
 }
