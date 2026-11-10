@@ -180,3 +180,77 @@ dialog::backdrop{background:rgba(22,58,48,.62)}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+
+/* ==========================================================
+   EXPERIENCIA DE TIENDA — catálogo visual Casa Sabor
+   ========================================================== */
+:root { --rojo-tienda:#c73520; --crema-tienda:#fff8ed; }
+body { background:#fffdf9; }
+.barra { box-shadow:0 5px 22px rgba(38,35,31,.055); }
+.marca { display:flex; align-items:center; gap:.65rem; }
+.marca::before { content:"CS"; display:grid; place-items:center; width:2.35rem;height:2.35rem;border-radius:.8rem;background:var(--rocoto);color:#fff;font-size:1rem; }
+.hero { position:relative; overflow:hidden; background:linear-gradient(115deg,#f5b832 0%,#ffd66e 58%,#ffe7a8 100%); }
+.hero::after { content:""; position:absolute; width:25rem;height:25rem;right:-8rem;top:-9rem;border:2.2rem solid rgba(255,255,255,.2);border-radius:50%;pointer-events:none; }
+.hero-in { position:relative;z-index:1; }
+.hero h1 { max-width:10ch; }
+.ticket { border-radius:1.2rem;box-shadow:0 12px 35px rgba(61,39,13,.12);mask:none;-webkit-mask:none; }
+.ticket::before { content:"★ LOS FAVORITOS DE CASA SABOR";display:block;margin-bottom:.8rem;color:var(--rocoto);font:800 .72rem var(--display);letter-spacing:.12em; }
+.carta { background:#fffdf9; }
+.carta-cab { display:flex;align-items:end;justify-content:space-between;gap:2rem; }
+.carta-titulo h2 { margin-top:.45rem; }
+.eyebrow { color:var(--rocoto);font:800 .72rem var(--display);letter-spacing:.14em; }
+.buscador { display:flex;align-items:center;gap:.7rem;width:min(100%,22rem);min-height:3.35rem;padding:0 1rem;border:1px solid var(--linea);border-radius:999px;background:white;box-shadow:0 5px 18px rgba(38,35,31,.05); }
+.buscador span { color:var(--rocoto);font:2rem var(--display); }
+.buscador input { width:100%;min-height:2.8rem;border:0;outline:0;background:transparent;color:var(--carbon);font:1rem var(--texto); }
+.buscador input:focus { box-shadow:none; }
+.promo-franja { display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:-.4rem 0 2.4rem;padding:1.4rem 1.8rem;border-radius:1.1rem;background:#183b30;color:white; }
+.promo-franja div { display:grid;gap:.18rem; }
+.promo-tag { color:#ffd36a;font:800 .68rem var(--display);letter-spacing:.15em; }
+.promo-franja strong { color:#fff;font:700 clamp(1.2rem,3vw,1.8rem) var(--display); }
+.promo-franja small { color:#d5e1da;font-size:.95rem; }
+.promo-icon { font-size:3.4rem; }
+.cat-nav a { border-radius:0 .7rem .7rem 0; }
+.categoria { scroll-margin-top:6.5rem; }
+.categoria h3 { font-size:2rem; }
+.platos { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;margin-top:1.2rem;padding:0;border:0; }
+.plato { display:flex;flex-direction:column;align-items:stretch;gap:.5rem;min-width:0;overflow:hidden;padding:0 0 1rem;border:1px solid #eee7db;border-radius:1rem;background:white;box-shadow:0 5px 18px rgba(45,36,24,.045);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease; }
+.plato:hover { transform:translateY(-4px);border-color:#e5c88d;box-shadow:0 14px 30px rgba(45,36,24,.1); }
+.plato-imagen { position:relative;width:100%;height:clamp(145px,20vw,220px);overflow:hidden;background:#f4eadb; }
+.plato-imagen img { display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease; }
+.plato:hover .plato-imagen img { transform:scale(1.045); }
+.plato-etiqueta { position:absolute;top:.75rem;left:.75rem;padding:.35rem .65rem;border-radius:999px;background:#fff;color:var(--rocoto);font:800 .68rem var(--display);letter-spacing:.04em;box-shadow:0 3px 10px #0002; }
+.plato-contenido { display:flex;flex-direction:column;flex:1;gap:.4rem;padding:.15rem 1rem 0; }
+.plato-fila { display:flex;align-items:start;justify-content:space-between;gap:.6rem; }
+.plato-fila h4 { font:700 1.15rem/1.2 var(--display);color:var(--pino); }
+.plato-fila .puntos { display:none; }
+.plato-fila .precio { font-size:1.1rem; }
+.plato-desc { min-height:2.8em;font-size:.94rem;line-height:1.4;color:var(--humo); }
+.plato-accion { display:flex;justify-content:space-between;align-items:center;min-height:2.8rem;margin-top:auto;padding:0 1rem; }
+.plato-accion::before { content:""; }
+.btn-agregar { min-height:2.55rem;padding:0 1.2rem;border:0;background:var(--rocoto);color:white;box-shadow:0 4px 10px rgba(191,58,34,.18); }
+.btn-agregar:hover { background:#9f2d1c;color:white;transform:translateY(-1px); }
+.stepper { box-shadow:0 4px 12px rgba(22,58,48,.16); }
+.plato.agotado { opacity:.65; }
+.plato.agotado .plato-imagen img { filter:grayscale(.65); }
+.etiqueta-agotado { padding:.55rem .8rem;border-radius:999px;background:#f4eee5; }
+.vacio { padding:2rem;border:1px dashed var(--linea-fuerte);border-radius:1rem;background:white; }
+.pie { margin-top:0; }
+@media(max-width:860px) {
+  .carta-cab { align-items:stretch;flex-direction:column;gap:1.2rem; }
+  .buscador { width:100%; }
+  .promo-franja { margin-top:0; }
+}
+@media(max-width:560px) {
+  .platos { grid-template-columns:1fr; }
+  .plato { display:grid;grid-template-columns: minmax(110px,38%) minmax(0,1fr);grid-template-rows:1fr;align-items:stretch;padding:0;gap:0; }
+  .plato-imagen { grid-column:1;grid-row:1;height:100%;min-height:160px; }
+  .plato-contenido { grid-column:2;grid-row:1;padding:.8rem .8rem .2rem; }
+  .plato-fila { flex-direction:column;gap:.3rem; }
+  .plato-fila h4 { font-size:1rem; }
+  .plato-desc { min-height:0;font-size:.85rem; }
+  .plato-accion { grid-column:2;grid-row:1;align-self:end;justify-content:flex-start;padding:0 .8rem .8rem; }
+  .promo-franja { padding:1rem; }
+  .promo-icon { font-size:2.4rem; }
+}
+@media(prefers-reduced-motion:reduce) { .plato,.plato-imagen img { transition:none; } }
