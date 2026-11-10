@@ -91,11 +91,13 @@
 
   function grupos() {
     const mapa = new Map();
+    const busqueda = String($("#buscarProducto")?.value || "").trim().toLocaleLowerCase("es");
     estado.categorias.forEach((c) => mapa.set(c.id, { cat: c, items: [] }));
     estado.productos.forEach((p) => {
       if (!p.categoria) return;
       if (!mapa.has(p.categoria.id)) mapa.set(p.categoria.id, { cat: p.categoria, items: [] });
-      mapa.get(p.categoria.id).items.push(p);
+      const texto = `${p.nombre || ""} ${p.descripcion || ""} ${p.categoria.nombre || ""}`.toLocaleLowerCase("es");
+      if (!busqueda || texto.includes(busqueda)) mapa.get(p.categoria.id).items.push(p);
     });
     return Array.from(mapa.values()).filter((g) => g.items.length > 0);
   }
@@ -126,15 +128,46 @@
     observarCategorias();
   }
 
+  const FOTOS = [
+    { keys: ["hamburguesa", "burger"], url: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["pollo", "broaster", "alitas", "nugget"], url: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["papas", "fr fries"], url: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["pizza"], url: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["lomo", "saltado"], url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["anticucho", "parrilla", "carne"], url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["teque", "queso"], url: "https://images.unsplash.com/photo-1531749668029-2db88e4276c7?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["huancaina", "papa"], url: "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["chicha", "maracuya", "limonada", "bebida", "jugo"], url: "https://images.unsplash.com/photo-1513558161293-c8609e8b8c5?auto=format&fit=crop&w=900&q=85" },
+    { keys: ["suspiro", "tres leches", "postre", "torta"], url: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=900&q=85" }
+  ];
+  const FOTO_DEFAULT = "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=85";
+  function fotoProducto(p) {
+    if (p.imagenUrl) return p.imagenUrl;
+    const nombre = String(p.nombre || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const categoria = String(p.categoria?.nombre || "").toLowerCase();
+    const encontrado = FOTOS.find((f) => f.keys.some((k) => nombre.includes(k)));
+    if (encontrado) return encontrado.url;
+    if (categoria.includes("bebida")) return FOTOS[8].url;
+    if (categoria.includes("postre")) return FOTOS[9].url;
+    return FOTO_DEFAULT;
+  }
+
   function platoHTML(p) {
+    const etiqueta = p.disponible ? "FAVORITO DE CASA" : "NO DISPONIBLE";
     return `
       <li class="plato${p.disponible ? "" : " agotado"}" data-id="${p.id}">
-        <div class="plato-fila">
-          <h4>${esc(p.nombre)}</h4>
-          <span class="puntos" aria-hidden="true"></span>
-          <span class="precio">${dinero(p.precio)}</span>
+        <div class="plato-imagen">
+          <img src="${fotoProducto(p)}" alt="${esc(p.nombre)}" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='${FOTO_DEFAULT}'">
+          <span class="plato-etiqueta">${etiqueta}</span>
         </div>
-        ${p.descripcion ? `<p class="plato-desc">${esc(p.descripcion)}</p>` : ""}
+        <div class="plato-contenido">
+          <div class="plato-fila">
+            <h4>${esc(p.nombre)}</h4>
+            <span class="precio">${dinero(p.precio)}</span>
+          </div>
+          ${p.descripcion ? `<p class="plato-desc">${esc(p.descripcion)}</p>` : ""}
+        </div>
         <div class="plato-accion">${controlHTML(p)}</div>
       </li>`;
   }
@@ -441,7 +474,12 @@
   // Clic en el fondo oscuro cierra el diálogo
   $$("dialog").forEach((dlg) => dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); }));
 
-  $("#formPedido").addEventListener("submit", enviarPedido);
+  $("#buscarProducto")?.addEventListener("input", () => {
+    renderCarta();
+    if (!grupos().length) $("#listaCarta").innerHTML = '<p class="vacio">No encontramos productos con esa búsqueda. Prueba con otro nombre.</p>';
+  });
+
+    $("#formPedido").addEventListener("submit", enviarPedido);
   $("#formSeguimiento").addEventListener("submit", (e) => {
     e.preventDefault();
     consultarPedido($("#segNumero").value.trim());

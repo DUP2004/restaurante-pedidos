@@ -1,123 +1,25 @@
 <section id="productos" class="seccion">
-
     <h2>Gestión de Productos</h2>
-
-
     <div class="acciones-superiores">
-
-        <button class="btn" onclick="mostrarFormularioProducto()">
-            + Nuevo producto
-        </button>
-
-        <button class="btn" onclick="cargarProductos()">
-            Actualizar productos
-        </button>
-
+        <button class="btn" onclick="mostrarFormularioProducto()">+ Nuevo producto</button>
+        <button class="btn" onclick="cargarProductos()">Actualizar productos</button>
     </div>
-
-
-    <!-- FORMULARIO -->
-
     <div id="formularioProducto" class="formulario oculto">
-
-        <h3 id="tituloFormularioProducto">
-            Nuevo producto
-        </h3>
-
+        <h3 id="tituloFormularioProducto">Nuevo producto</h3>
         <input type="hidden" id="productoId">
-
-
-        <div class="campo">
-
-            <label>Nombre</label>
-
-            <input
-                type="text"
-                id="productoNombre"
-                placeholder="Ejemplo: Hamburguesa Doble"
-            >
-
+        <div class="campo"><label for="productoNombre">Nombre</label><input type="text" id="productoNombre" maxlength="120" placeholder="Ejemplo: Hamburguesa Doble"></div>
+        <div class="campo"><label for="productoDescripcion">Descripción</label><textarea id="productoDescripcion" maxlength="1000" placeholder="Descripción del producto"></textarea></div>
+        <div class="campo"><label for="productoPrecio">Precio</label><input type="number" id="productoPrecio" step="0.01" min="0" placeholder="Ejemplo: 15.90"></div>
+        <div class="campo"><label for="productoCategoria">Categoría</label><select id="productoCategoria"><option value="">Seleccione una categoría</option></select></div>
+        <div class="campo-checkbox"><input type="checkbox" id="productoDisponible" checked><label for="productoDisponible">Producto disponible</label></div>
+        <div class="campo imagen-admin">
+            <label for="productoImagen">Fotografía del producto (JPEG, PNG o WebP; máximo 3 MB)</label>
+            <input type="file" id="productoImagen" accept="image/jpeg,image/png,image/webp">
+            <img id="productoImagenPreview" alt="Vista previa de la imagen del producto" hidden>
+            <small id="productoImagenEstado">La imagen se puede cargar después de guardar el producto.</small>
         </div>
-
-
-        <div class="campo">
-
-            <label>Descripción</label>
-
-            <textarea
-                id="productoDescripcion"
-                placeholder="Descripción del producto"
-            ></textarea>
-
-        </div>
-
-
-        <div class="campo">
-
-            <label>Precio</label>
-
-            <input
-                type="number"
-                id="productoPrecio"
-                step="0.01"
-                min="0"
-                placeholder="Ejemplo: 15.90"
-            >
-
-        </div>
-
-
-        <div class="campo">
-
-            <label>Categoría</label>
-
-            <select id="productoCategoria">
-
-                <option value="">
-                    Seleccione una categoría
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div class="campo-checkbox">
-
-            <input
-                type="checkbox"
-                id="productoDisponible"
-                checked
-            >
-
-            <label for="productoDisponible">
-                Producto disponible
-            </label>
-
-        </div>
-
-
-        <button class="btn" onclick="guardarProducto()">
-            Guardar
-        </button>
-
-
-        <button
-            class="btn btn-cancelar"
-            onclick="cancelarFormularioProducto()"
-        >
-            Cancelar
-        </button>
-
+        <button class="btn" onclick="guardarProducto()">Guardar</button>
+        <button class="btn btn-cancelar" onclick="cancelarFormularioProducto()">Cancelar</button>
     </div>
-
-
-    <!-- LISTA -->
-
-    <div id="listaProductos" class="contenedor">
-
-        Cargando productos...
-
-    </div>
-
+    <div id="listaProductos" class="contenedor">Cargando productos...</div>
 </section>

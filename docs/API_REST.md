@@ -112,3 +112,13 @@ GET /api/pedidos/seguimiento/UUID-DEVUELTO-AL-CREAR
 ```
 
 No devuelve nombre, correo ni teléfono del cliente. Las rutas administrativas `GET /api/pedidos`, `GET /api/pedidos/{id}`, y `/api/clientes/**` requieren sesión.
+
+## Imágenes de productos
+
+| Método | Ruta | Descripción | Acceso |
+|---|---|---|---|
+| POST | `/api/productos/{id}/imagen` | Subir o reemplazar fotografía mediante multipart/form-data, campo `archivo` | Administrador |
+| GET | `/api/productos/{id}/imagen` | Obtener la fotografía del producto | Público |
+| DELETE | `/api/productos/{id}/imagen` | Eliminar la fotografía | Administrador |
+
+Se aceptan JPEG, PNG y WebP de hasta 3 MB. El servidor comprueba el MIME y la firma binaria del archivo; el nombre original no se utiliza para construir rutas. La fotografía se almacena como MEDIUMBLOB en la misma base de datos que el producto, y la API de productos incluye `imagenUrl` cuando existe una imagen. Esta decisión evita depender del disco efímero del contenedor. A cambio, aumenta el tamaño de la base de datos y el tráfico de la API; para catálogos grandes conviene migrar a almacenamiento de objetos persistente (por ejemplo, S3 compatible) manteniendo en la BD solo la clave del objeto.
