@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +24,7 @@ public class ConfiguracionSeguridad {
     public UserDetailsService userDetailsService(
             PasswordEncoder encoder,
             @Value("${app.admin.username:admin}") String username,
-            @Value("${app.admin.password:CambiarEstaClave123!}") String password) {
+            @Value("${app.admin.password:admin123}") String password) {
         return new InMemoryUserDetailsManager(
                 User.withUsername(username)
                         .password(encoder.encode(password))
@@ -37,13 +36,16 @@ public class ConfiguracionSeguridad {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // La interfaz actual usa fetch para enviar formularios; para mantenerla funcionando,
-            // se desactiva CSRF. Para publicar el sistema, conviene habilitarlo y enviar el token.
+            // La interfaz administrativa actual aún no envía token CSRF.
+            // Mantenerlo desactivado es una limitación conocida del prototipo.
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login.html", "/css/**", "/js/**", "/favicon.ico").permitAll()
-                .requestMatchers(HttpMethod.GET, "/", "/index.html", "/api/productos", "/api/productos/**", "/api/categorias", "/api/categorias/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/pedidos").permitAll()
+                .requestMatchers(HttpMethod.GET, "/", "/index.html",
+                        "/api/productos", "/api/productos/**",
+                        "/api/categorias", "/api/categorias/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/pedidos/publicos").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/pedidos/seguimiento/**").permitAll()
                 .requestMatchers("/admin.html", "/interfaces/**", "/api/**").authenticated()
                 .anyRequest().permitAll()
             )
