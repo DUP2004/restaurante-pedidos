@@ -314,7 +314,7 @@
   function mostrarConfirmacion(pedido) {
     const caja = $("#carritoConfirmacion");
     const detalle = (pedido.detalles || []).map((d) =>
-      `<li>${d.cantidad} × ${esc(d.producto.nombre)}</li>`).join("");
+      `<li>${d.cantidad} × ${esc(d.nombre || d.producto?.nombre)}</li>`).join("");
     caja.innerHTML = `
       <h3>Recibimos tu pedido</h3>
       <span class="numero">Pedido recibido</span>
@@ -383,7 +383,7 @@
 
   function abrirSeguimiento(codigo) {
     const campo = $("#segNumero");
-    const ultimo = numero ?? almacen.leer("ultimoCodigoSeguimiento");
+    const ultimo = codigo ?? almacen.leer("ultimoCodigoSeguimiento");
     campo.value = ultimo || "";
     $("#segResultado").innerHTML = "";
     $("#carrito").close();
