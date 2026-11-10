@@ -353,7 +353,7 @@
     const detalle = (p.detalles || []).map((d) =>
       `<li>${d.cantidad} × ${esc(d.nombre || d.producto?.nombre)}</li>`).join("");
     return `
-      <p class="estado-titulo">Pedido N.º ${p.id}: ${esc(titulo)}</p>
+      <p class="estado-titulo">Tu pedido: ${esc(titulo)}</p>
       <p style="margin:0">${esc(texto)}</p>
       ${progreso}
       <ul class="seg-detalle">${detalle}</ul>
