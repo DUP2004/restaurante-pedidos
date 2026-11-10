@@ -34,6 +34,7 @@ public Pedido obtener(Long id) {
             .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
 }
 
+    @Transactional
     public Pedido crear(PedidoRequest request) {
         Cliente cliente = clienteRepository.findById(request.getClienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
@@ -66,11 +67,13 @@ public Pedido obtener(Long id) {
         return pedidoRepository.save(pedido);
     }
 
+    @Transactional
     public Pedido cambiarEstado(Long id, EstadoPedido estado) {
         Pedido pedido = obtener(id);
         pedido.setEstado(estado);
         return pedidoRepository.save(pedido);
     }
 
+    @Transactional
     public void eliminar(Long id) { pedidoRepository.delete(obtener(id)); }
 }
