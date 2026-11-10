@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categorias")
-@CrossOrigin
 public class CategoriaCont {
     private final CategoriaSer service;
     public CategoriaCont(CategoriaSer service) { this.service = service; }

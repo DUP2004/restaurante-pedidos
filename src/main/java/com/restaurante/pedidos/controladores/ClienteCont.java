@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
-@CrossOrigin
 public class ClienteCont {
     private final ClienteSer service;
     public ClienteCont(ClienteSer service) { this.service = service; }

@@ -263,22 +263,6 @@
   // ------------------------------------------------------------
   // Enviar pedido
   // ------------------------------------------------------------
-  async function obtenerOCrearCliente(datos) {
-    // El correo es único en la base de datos: si ya existe, reutilizamos ese cliente.
-    const rl = await fetch("/api/clientes");
-    if (!rl.ok) throw new Error("clientes");
-    const lista = await rl.json();
-    const existente = lista.find((c) => (c.correo || "").toLowerCase() === datos.correo.toLowerCase());
-    if (existente) return existente.id;
-
-    const rc = await fetch("/api/clientes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
-    });
-    if (!rc.ok) throw new Error("crear cliente");
-    return (await rc.json()).id;
-  }
 
   async function enviarPedido(evento) {
     evento.preventDefault();
@@ -301,20 +285,19 @@
     boton.textContent = "Enviando pedido…";
 
     try {
-      const clienteId = await obtenerOCrearCliente(datos);
       const detalles = Array.from(estado.carrito.entries())
         .map(([productoId, cantidad]) => ({ productoId, cantidad }));
 
-      const respuesta = await fetch("/api/pedidos", {
+      const respuesta = await fetch("/api/pedidos/publicos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clienteId, detalles })
+        body: JSON.stringify({ cliente: datos, detalles })
       });
       if (!respuesta.ok) throw new Error("pedido");
 
       const pedido = await respuesta.json();
       almacen.guardar("cliente", datos);
-      almacen.guardar("ultimoPedido", pedido.id);
+      almacen.guardar("ultimoCodigoSeguimiento", pedido.codigoSeguimiento);
       estado.carrito.clear();
       guardarCarrito();
       mostrarConfirmacion(pedido);
@@ -331,12 +314,12 @@
   function mostrarConfirmacion(pedido) {
     const caja = $("#carritoConfirmacion");
     const detalle = (pedido.detalles || []).map((d) =>
-      `<li>${d.cantidad} × ${esc(d.producto.nombre)}</li>`).join("");
+      `<li>${d.cantidad} × ${esc(d.nombre || d.producto?.nombre)}</li>`).join("");
     caja.innerHTML = `
       <h3>Recibimos tu pedido</h3>
-      <span class="numero">N.º ${pedido.id}</span>
-      <p>Guarda este número: con él puedes ver si tu pedido está en preparación o listo para recoger.</p>
-      <ul class="seg-detalle">${detalle}</ul>
+      <span class="numero">Pedido recibido</span>
+      <p>Guarda este código privado para consultar el estado de tu pedido. No lo compartas con otras personas.</p>
+      <p class="codigo-seguimiento"><strong>${esc(pedido.codigoSeguimiento)}</strong></p><ul class="seg-detalle">${detalle}</ul>
       <p class="total" style="margin-top:1rem"><span>Total</span><span>${dinero(pedido.total)}</span></p>
       <div class="botones">
         <button type="button" class="boton boton-primario" id="irSeguimiento">Seguir mi pedido</button>
@@ -368,26 +351,27 @@
           `<li class="${i < indice ? "hecho" : i === indice ? "actual" : ""}">${nombre}</li>`).join("")}
       </ol>`;
     const detalle = (p.detalles || []).map((d) =>
-      `<li>${d.cantidad} × ${esc(d.producto.nombre)}</li>`).join("");
+      `<li>${d.cantidad} × ${esc(d.nombre || d.producto?.nombre)}</li>`).join("");
     return `
-      <p class="estado-titulo">Pedido N.º ${p.id}: ${esc(titulo)}</p>
+      <p class="estado-titulo">Tu pedido: ${esc(titulo)}</p>
       <p style="margin:0">${esc(texto)}</p>
       ${progreso}
       <ul class="seg-detalle">${detalle}</ul>
       <p class="total" style="margin:1rem 0 0"><span>Total</span><span>${dinero(p.total)}</span></p>`;
   }
 
-  async function consultarPedido(numero) {
+  async function consultarPedido(codigo) {
     const salida = $("#segResultado");
-    if (!/^[1-9]\d*$/.test(numero)) {
-      salida.innerHTML = `<p class="error" role="alert">Escribe solo el número de tu pedido, por ejemplo 12.</p>`;
+    const valor = String(codigo || "").trim();
+    if (!/^[0-9a-f-]{36}$/i.test(valor)) {
+      salida.innerHTML = `<p class="error" role="alert">Introduce el código privado de seguimiento que recibiste al confirmar el pedido.</p>`;
       return;
     }
     salida.innerHTML = `<p class="nota">Buscando…</p>`;
     try {
-      const r = await fetch(`/api/pedidos/${numero}`);
+      const r = await fetch(`/api/pedidos/seguimiento/${encodeURIComponent(valor)}`);
       if (!r.ok) {
-        salida.innerHTML = `<p class="error" role="alert">No encontramos el pedido N.º ${esc(numero)}. Revisa el número e inténtalo otra vez.</p>`;
+        salida.innerHTML = `<p class="error" role="alert">No encontramos un pedido con ese código. Revisa que lo hayas copiado completo.</p>`;
         return;
       }
       salida.innerHTML = seguimientoHTML(await r.json());
@@ -397,9 +381,9 @@
     }
   }
 
-  function abrirSeguimiento(numero) {
+  function abrirSeguimiento(codigo) {
     const campo = $("#segNumero");
-    const ultimo = numero ?? almacen.leer("ultimoPedido");
+    const ultimo = codigo ?? almacen.leer("ultimoCodigoSeguimiento");
     campo.value = ultimo || "";
     $("#segResultado").innerHTML = "";
     $("#carrito").close();

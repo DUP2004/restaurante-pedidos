@@ -1,5 +1,9 @@
 package com.restaurante.pedidos.repositorio;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.restaurante.pedidos.entidades.Pedido;
-public interface PedidoRepository extends JpaRepository<Pedido, Long> {}
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface PedidoRepository extends JpaRepository<Pedido, Long> {
+    Optional<Pedido> findByCodigoSeguimiento(String codigoSeguimiento);
+}

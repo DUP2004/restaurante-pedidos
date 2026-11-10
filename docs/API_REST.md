@@ -38,11 +38,13 @@ La API utiliza JSON y tiene como prefijo `/api`. Los ejemplos son orientativos y
 |---|---|---|---|
 | GET | `/api/pedidos` | Listar pedidos | Administrador |
 | GET | `/api/pedidos/{id}` | Consultar pedido | Administrador |
-| POST | `/api/pedidos` | Crear pedido | Público |
+| POST | `/api/pedidos` | Crear pedido con cliente existente (uso administrativo/interno) | Administrador |
+| POST | `/api/pedidos/publicos` | Crear pedido desde el sitio público con datos del cliente | Público |
+| GET | `/api/pedidos/seguimiento/{codigo}` | Consultar estado mediante UUID privado | Público |
 | PUT | `/api/pedidos/{id}/estado?estado=LISTO` | Cambiar estado | Administrador |
 | DELETE | `/api/pedidos/{id}` | Eliminar pedido | Administrador |
 
-Los valores válidos del estado son `PENDIENTE`, `PREPARANDO`, `LISTO`, `ENTREGADO` y `CANCELADO`.
+Los valores válidos del estado son `PENDIENTE`, `PREPARANDO`, `LISTO`, `ENTREGADO` y `CANCELADO`. El endpoint público devuelve un DTO limitado y no expone datos personales del cliente. El código UUID de seguimiento debe mantenerse privado.
 
 ## Ejemplo: crear un pedido
 
@@ -78,3 +80,35 @@ El inicio de sesión se realiza mediante formulario en `/login.html`. Spring Sec
 ## Respuestas y errores
 
 Las operaciones de creación responden con HTTP 201; las eliminaciones correctas responden HTTP 204. Los errores de validación, identificadores inexistentes y restricciones de base de datos pueden producir respuestas de error HTTP. El proyecto aún no define un formato JSON uniforme para todos los errores; se recomienda incorporar un `@RestControllerAdvice` antes de integrar clientes externos.
+
+
+## Ejemplo: crear pedido público
+
+```http
+POST /api/pedidos/publicos
+Content-Type: application/json
+```
+
+```json
+{
+  "cliente": {
+    "nombre": "Ana",
+    "apellido": "Pérez",
+    "correo": "ana@example.com",
+    "telefono": "999123456"
+  },
+  "detalles": [
+    { "productoId": 1, "cantidad": 2 }
+  ]
+}
+```
+
+La respuesta incluye `codigoSeguimiento`, `total`, `estado` y detalles con nombre/cantidad. Guardar el código: es la credencial necesaria para consultar el estado.
+
+## Ejemplo: seguimiento público
+
+```http
+GET /api/pedidos/seguimiento/UUID-DEVUELTO-AL-CREAR
+```
+
+No devuelve nombre, correo ni teléfono del cliente. Las rutas administrativas `GET /api/pedidos`, `GET /api/pedidos/{id}`, y `/api/clientes/**` requieren sesión.
